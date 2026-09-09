@@ -20,7 +20,8 @@
   --border: rgba(88, 111, 107, 0.25); /* Granite */
   --accent: #586f6b; /* Granite */
   --accent-hover: #46524f; /* darkened Granite */
-  --signature: #cfc0bd; /* Silver */
+  --signature: #cfc0bd; /* Silver — the swatch-tab block color, not for text */
+  --signature-text: #8b5f58; /* darkened Silver, for legible price text on light surfaces */
   --signature-ink: #3b2e2e;
   --danger: #a65c4a;
 }
@@ -36,6 +37,7 @@
     --accent: #7f9183; /* Grey Olive */
     --accent-hover: #96a899;
     --signature: #cfc0bd; /* Silver — unchanged across themes */
+    --signature-text: #e0b8ae; /* lightened Silver, for legible price text on dark surfaces */
     --signature-ink: #2e2422;
     --danger: #d08972;
   }
@@ -50,6 +52,7 @@
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
   --color-signature: var(--signature);
+  --color-signature-text: var(--signature-text);
   --color-signature-ink: var(--signature-ink);
   --color-border: var(--border);
   --color-danger: var(--danger);

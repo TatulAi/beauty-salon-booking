@@ -95,7 +95,7 @@ export function BookingSummary({
           {t.appointments.with} {staff.display_name}
         </p>
         <TicketDivider />
-        <p className="font-mono text-lg text-signature">{formatPrice(service.price_cents, locale)}</p>
+        <p className="font-mono text-lg text-signature-text">{formatPrice(service.price_cents, locale)}</p>
       </Ticket>
 
       {error && <p className="text-sm text-danger">{error}</p>}

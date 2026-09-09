@@ -27,7 +27,7 @@ export function HomePage() {
           <p className="font-display mt-1 text-xl font-medium text-text">{t.home.ticketService}</p>
           <p className="mt-1 text-sm text-text-secondary">{t.home.ticketWith}</p>
           <TicketDivider />
-          <p className="font-mono text-lg text-signature">{t.home.ticketPrice}</p>
+          <p className="font-mono text-lg text-signature-text">{t.home.ticketPrice}</p>
         </Ticket>
       </div>
     </div>

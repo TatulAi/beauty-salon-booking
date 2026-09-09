@@ -85,7 +85,7 @@ export function BookingPage() {
             {t.appointments.with} {staff.display_name}
           </p>
           <TicketDivider />
-          <p className="font-mono text-lg text-signature">
+          <p className="font-mono text-lg text-signature-text">
             {formatPrice(confirmedAppointment.price_cents, locale)}
           </p>
         </Ticket>

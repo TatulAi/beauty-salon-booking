@@ -68,7 +68,7 @@ export function AppointmentCard({ appointment, timezone, locale, onCancelled }: 
       <TicketDivider />
 
       <div className="flex items-center justify-between">
-        <p className={`font-mono text-lg ${isCancelled ? 'text-text-secondary' : 'text-signature'}`}>
+        <p className={`font-mono text-lg ${isCancelled ? 'text-text-secondary' : 'text-signature-text'}`}>
           {formatPrice(appointment.price_cents, locale)}
         </p>
         <p className="text-xs tracking-wide text-text-secondary uppercase">

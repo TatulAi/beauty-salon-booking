@@ -9,14 +9,21 @@ A booking web app for a unisex beauty/barber salon. React 19 + TypeScript + Vite
 see `beauty-salon-booking-project` in the author's Claude memory for the full backstory, or just read
 below.
 
-**Status as of this writing: Phase 0 (scaffold/schema/auth) and Phase 1 (core booking flow) are
-written and pass `npm run build`/`npm run lint` locally, but have NOT been run against a live Supabase
-project yet.** Docker wasn't available in the environment this was built in, so the SQL migrations
-couldn't even be smoke-tested against a local `supabase start` instance — they've been reviewed
-carefully but never actually executed. Nothing involving real auth, the availability RPC, or the
-exclusion constraint under concurrency has been exercised end-to-end. Treat everything below describing
-runtime behavior as "should work per the code," not "verified." Run the Verification section of the
-plan (`~/.claude/plans/noble-dreaming-fog.md`) once a Supabase project exists.
+**Status as of this writing:** Phase 0 (scaffold/schema/auth) and Phase 1 (core booking flow) are
+written and pass `npm run build`/`npm run lint`. A live Supabase project exists (`eu-central-1`,
+ref `qowqhxuqclvfphysjiub`), linked, with all three migrations and `seed.sql` applied successfully —
+this verified the exclusion constraint's opclass, the plpgsql compiles, and RLS actually restricts reads
+as intended (checked via direct REST calls). `get_available_slots` was also verified against the real
+data for the 120-minute coloring service on a Mon-Fri (9-12/12:30-17) day: it correctly offers 9:00 and
+10:00 as start times and nothing between 10:00 and 12:30, confirming the lunch-gap "hard block" behavior
+works as designed. `create_appointment` was confirmed to reject unauthenticated calls with
+`AUTH_REQUIRED`.
+
+**Still not verified**: Google/GitHub OAuth (providers not yet enabled in the dashboard), the full
+frontend booking flow against real data (only raw REST/RPC calls have been exercised, not the React app
+itself), and the exclusion constraint's actual concurrency behavior (two simultaneous bookings racing
+for the same slot — the single calls made so far were sequential, not concurrent). Run the rest of the
+Verification section in the plan (`~/.claude/plans/noble-dreaming-fog.md`) once OAuth is wired up.
 
 ## The core problem this app solves
 
@@ -40,10 +47,11 @@ npx supabase link --project-ref <ref>     # after creating the Supabase project 
 npx supabase db push                      # applies supabase/migrations/*.sql to the linked project
 ```
 
-There is no local Supabase CLI project config (`supabase/config.toml`) checked in — it wasn't generated
-via `supabase init` because that step needs to run interactively against a real project. Run
-`npx supabase init` once if you want local Docker-based Supabase dev; for just pushing migrations to a
-hosted project, `link` + `db push` don't strictly need it.
+The project is already linked (`supabase/config.toml`'s `project_id` + the CLI's saved link point at
+ref `qowqhxuqclvfphysjiub`). `npx supabase login --token <token>` (non-interactive, needs a personal
+access token from https://supabase.com/dashboard/account/tokens — the normal browser-based
+`supabase login` needs a real TTY and won't work from an agent shell) is a one-time step per machine;
+after that, `db push` just works.
 
 ## Architecture
 

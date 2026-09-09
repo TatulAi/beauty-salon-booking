@@ -6,8 +6,10 @@ slot), and confirm. Portfolio + learning project.
 
 ## Setup checklist
 
-Everything in the repo (schema, frontend code) is already written. These are the steps that need a
-browser and your own accounts — nobody else can do them for you.
+Everything in the repo (schema, frontend code) is already written, and a live Supabase project already
+exists (`eu-central-1`, ref `qowqhxuqclvfphysjiub`) with the schema and seed data pushed — `.env.local`
+is set up locally with its URL/anon key. The remaining steps need a browser and your own accounts —
+nobody else can do them for you.
 
 ### 1. Install dependencies
 
@@ -15,45 +17,34 @@ browser and your own accounts — nobody else can do them for you.
 npm install
 ```
 
-### 2. Create the Supabase project
+### 2. ~~Create the Supabase project~~ — done
 
-1. Go to [supabase.com](https://supabase.com) → New Project.
-2. Once created, grab from **Project Settings → API**: the **Project URL** and the **anon public key**.
-3. Copy `.env.example` to `.env.local` and fill both in:
-   ```
-   VITE_SUPABASE_URL=
-   VITE_SUPABASE_ANON_KEY=
-   ```
-
-### 3. Push the database schema
+Project created, linked, migrations + seed pushed. If you ever need to redo this on another machine:
 
 ```bash
-npx supabase login          # opens a browser window
-npx supabase link --project-ref <your-project-ref>   # ref is in the project's dashboard URL
-npx supabase db push        # applies supabase/migrations/*.sql
+npx supabase login --token <personal access token from supabase.com/dashboard/account/tokens>
+npx supabase link --project-ref qowqhxuqclvfphysjiub
+npx supabase db push --include-seed
 ```
 
-Then run `supabase/seed.sql` once via the Supabase dashboard's SQL editor (the CLI's `db push` doesn't
-apply `seed.sql` automatically for a remote-linked project — paste-and-run it directly).
-
-### 4. Enable auth providers
+### 3. Enable auth providers
 
 In the Supabase dashboard → **Authentication → Providers**:
 
 - **Email**: enable it (confirmation email on is recommended).
 - **Google**: create an OAuth Client (Web application) in
   [Google Cloud Console](https://console.cloud.google.com/apis/credentials). Authorized redirect URI:
-  `https://<your-project-ref>.supabase.co/auth/v1/callback`. Paste the Client ID/Secret into Supabase's
-  Google provider settings and enable it.
+  `https://qowqhxuqclvfphysjiub.supabase.co/auth/v1/callback`. Paste the Client ID/Secret into
+  Supabase's Google provider settings and enable it.
 - **GitHub**: create an OAuth App in
   [GitHub Developer Settings](https://github.com/settings/developers). Authorization callback URL: the
-  same `https://<your-project-ref>.supabase.co/auth/v1/callback`. Paste Client ID/Secret into Supabase's
-  GitHub provider settings and enable it.
+  same `https://qowqhxuqclvfphysjiub.supabase.co/auth/v1/callback`. Paste Client ID/Secret into
+  Supabase's GitHub provider settings and enable it.
 - **Authentication → URL Configuration**: set Site URL and add to the Redirect URLs allow-list:
   `http://localhost:5173/**`, your Vercel preview pattern (`https://beauty-salon-booking-*.vercel.app/**`),
   and your production domain once you have one.
 
-### 5. Run it
+### 4. Run it
 
 ```bash
 npm run dev
@@ -66,11 +57,10 @@ update public.staff set user_id = '<your auth.users id — Authentication → Us
 where id = '00000000-0000-0000-0000-000000000001';
 ```
 
-### 6. Deploying
+### 5. Deploying
 
-Deploy to Vercel as usual. Before going live, edit `vercel.json` and replace `<SUPABASE_PROJECT_REF>` in
-the CSP's `connect-src` with your real project ref — otherwise the browser blocks all API calls in
-production. Set `VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` as Vercel env vars too.
+Deploy to Vercel as usual. `vercel.json`'s CSP already points at the real project ref. Set
+`VITE_SUPABASE_URL`/`VITE_SUPABASE_ANON_KEY` as Vercel env vars too (same values as `.env.local`).
 
 ## Troubleshooting
 

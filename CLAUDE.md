@@ -27,9 +27,40 @@ slots as the raw RPC test — 9:00-10:00 then a gap to 12:30), `create_appointme
 row, and `cancel_appointment` flipping its status. GitHub auth was dropped per project owner's choice
 (not needed) — see the git history for the removal commit if it's ever wanted back.
 
-**Still not verified**: the exclusion constraint's actual concurrency behavior (two simultaneous
-bookings racing for the same slot — everything tested so far was sequential, not concurrent), and the
-booking flow for staff/services other than the one combination exercised above.
+**Also verified (2026-09-09 session), in a real browser against the live project:**
+- **Booking flow for other services.** Men's Haircut (30min + 5 buffer) and Beard Trim (15min +
+  5 buffer) both booked end-to-end. Confirmed the duration/buffer math differs correctly per service:
+  on a Mon-Fri day the 30-min service offers a last morning slot of 11:30 (11:30+30 = 12:00, the
+  window edge), while the 15-min service also offers 11:45. `get_available_slots`'s loop guard checks
+  `v_candidate + duration <= v_window_end` — `duration` only, not `duration + buffer` — so a booking
+  at the very last slot has its buffer hang over the window edge / into the lunch gap (read from the
+  migration source; not separately confirmed by inspecting a persisted `blocked_range` at the edge).
+  There is only **one** seeded staff member, so "other staff" combinations are not testable without
+  adding staff.
+- **Cross-service duration-aware blocking.** After booking the 30-min Men's Haircut at 14:00 (blocks
+  14:00-14:35 incl. buffer), the Beard Trim availability for the same staff/day correctly dropped
+  14:00 / 14:15 / 14:30 and offered 14:45 as the next slot — a 30-min booking removes three 15-min
+  candidate slots from a different service, buffer respected.
+- **The `SLOT_TAKEN` chain, under a real race.** Two browser tabs (same logged-in user) both driven
+  to the confirm step for the identical slot before either booked. Tab A confirmed → success. Tab B
+  confirmed → the exclusion constraint fired, `create_appointment` re-raised `SLOT_TAKEN`, supabase-js
+  surfaced it as `P0001` with message `SLOT_TAKEN`, and `BookingSummary.tsx`'s
+  `error.message.includes('SLOT_TAKEN')` matched: it showed the friendly Slovak error ("Tento termín
+  si práve niekto rezervoval — vyberte prosím iný.") **and** bounced the user back to the date/time
+  step with a freshly-refetched slot list (10:00 and the adjacent overlapping starts now gone). Not
+  just the error path — automatic recovery works too.
+
+**Minor note:** "My Appointments" shows every appointment (past, upcoming, cancelled) with no
+filtering, ordered `start_time` descending (`MyAppointmentsPage.tsx:22`) — newest appointment time
+first, so a cancelled far-future booking sorts above a sooner confirmed one. Intentional and
+consistent; whether "next upcoming first" would be a better default is a v2 UX call. The 2026-09-09
+test run left ~3 confirmed test bookings (Thu 2026-09-10: Men's Haircut 10:00 + 14:00, Beard Trim
+15:00) in the live DB; harmless, cancel via the UI if unwanted.
+
+**Still not verified**: nothing from the original list remains. Genuinely-parallel (same-millisecond)
+racing was not attempted — the two-tab test above is "concurrent sessions, sequential commits", which
+exercises the whole app-level chain but not simultaneous row-lock contention. Postgres semantics make
+the latter a non-question, so this is left alone deliberately.
 
 ## The core problem this app solves
 
@@ -171,10 +202,18 @@ Safe to expose the anon key: everything it can do is constrained by RLS policies
 ## Deployment
 
 `vercel.json` has a SPA catch-all rewrite (`/((?!api/).*)` → `/index.html`) since this app has real
-routes, unlike the one-page sibling sites. Its CSP's `connect-src` has a `<SUPABASE_PROJECT_REF>`
-placeholder — **replace it with the real project ref once the Supabase project exists**, or the browser
-will silently block every Supabase API call in production. `img-src` already allowlists both OAuth
-avatar CDN (`lh3.googleusercontent.com`) in case profile pictures get rendered later.
+routes, unlike the one-page sibling sites. Its CSP's `connect-src` already points at the real project
+(`https://qowqhxuqclvfphysjiub.supabase.co`) — the old `<SUPABASE_PROJECT_REF>` placeholder was
+replaced when the project was wired up. `img-src` allowlists the OAuth avatar CDN
+(`lh3.googleusercontent.com`) in case profile pictures get rendered later.
+
+**Before the first deploy:**
+- Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in the Vercel project's env **before** the
+  build runs — Vite inlines `VITE_*` at build time, so a build without them ships a bundle where every
+  Supabase call is `undefined`. Values are in `.env.local`.
+- Add the deployed origin to **Supabase Auth → URL Configuration** (redirect allowlist / site URL) and
+  to the **Google Cloud console**'s authorized redirect URIs, or Google OAuth 404s/redirect-mismatches
+  in production. Local-verified OAuth says nothing about the prod domain.
 
 ## Roadmap (not built)
 

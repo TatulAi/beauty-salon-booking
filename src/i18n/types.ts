@@ -59,13 +59,18 @@ export interface Translations {
   auth: {
     loginHeading: string
     signupHeading: string
+    welcomeBack: string
+    signInSubtitle: string
     email: string
     password: string
     fullName: string
     loginButton: string
     signupButton: string
     orContinueWith: string
+    orShort: string
     continueWithGoogle: string
+    showPassword: string
+    hidePassword: string
     noAccount: string
     hasAccount: string
     checkEmailToConfirm: string
@@ -75,5 +80,9 @@ export interface Translations {
     loading: string
     error: string
     tryAgain: string
+  }
+  theme: {
+    switchToLight: string
+    switchToDark: string
   }
 }

@@ -26,8 +26,18 @@
   --danger: #a65c4a;
 }
 
+/*
+  Dark tokens. There are two selectors on purpose:
+  - `@media (prefers-color-scheme: dark) :root:not([data-theme='light'])`
+    — follow the OS unless the visitor explicitly forced light.
+  - `:root[data-theme='dark']` — the visitor explicitly forced dark.
+  Explicit light needs no rule: it's the bare `:root` defaults above, and
+  `:not([data-theme='light'])` keeps the media query from re-darkening it.
+  The two blocks must stay in sync (see ThemeContext.tsx / the inline script
+  in index.html for how `data-theme` gets set).
+*/
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not([data-theme='light']) {
     --bg: #1c2624; /* darkened Granite */
     --surface: #26312f;
     --surface-raised: #2e3a37;
@@ -41,6 +51,21 @@
     --signature-ink: #2e2422;
     --danger: #d08972;
   }
+}
+
+:root[data-theme='dark'] {
+  --bg: #1c2624; /* darkened Granite */
+  --surface: #26312f;
+  --surface-raised: #2e3a37;
+  --text: #ddd5d0; /* Dust Grey */
+  --text-secondary: #9ca89f; /* muted Grey Olive */
+  --border: rgba(221, 213, 208, 0.14);
+  --accent: #7f9183; /* Grey Olive */
+  --accent-hover: #96a899;
+  --signature: #cfc0bd; /* Silver — unchanged across themes */
+  --signature-text: #e0b8ae; /* lightened Silver, for legible price text on dark surfaces */
+  --signature-ink: #2e2422;
+  --danger: #d08972;
 }
 
 @theme {

@@ -62,13 +62,18 @@ export const en: Translations = {
   auth: {
     loginHeading: 'Log in',
     signupHeading: 'Create an account',
+    welcomeBack: 'Welcome back',
+    signInSubtitle: 'Sign in to continue to The Parlour',
     email: 'Email',
     password: 'Password',
     fullName: 'Full name',
     loginButton: 'Log in',
     signupButton: 'Sign up',
     orContinueWith: 'or continue with',
+    orShort: 'or',
     continueWithGoogle: 'Continue with Google',
+    showPassword: 'Show password',
+    hidePassword: 'Hide password',
     noAccount: "Don't have an account?",
     hasAccount: 'Already have an account?',
     checkEmailToConfirm: 'Check your email to confirm your account.',
@@ -78,5 +83,9 @@ export const en: Translations = {
     loading: 'Loading...',
     error: 'Something went wrong.',
     tryAgain: 'Try again',
+  },
+  theme: {
+    switchToLight: 'Switch to light mode',
+    switchToDark: 'Switch to dark mode',
   },
 }

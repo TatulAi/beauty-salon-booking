@@ -62,13 +62,18 @@ export const sk: Translations = {
   auth: {
     loginHeading: 'Prihlásenie',
     signupHeading: 'Vytvoriť účet',
+    welcomeBack: 'Vitajte späť',
+    signInSubtitle: 'Prihláste sa a pokračujte do The Parlour',
     email: 'Email',
     password: 'Heslo',
     fullName: 'Celé meno',
     loginButton: 'Prihlásiť sa',
     signupButton: 'Registrovať sa',
     orContinueWith: 'alebo pokračujte cez',
+    orShort: 'alebo',
     continueWithGoogle: 'Pokračovať cez Google',
+    showPassword: 'Zobraziť heslo',
+    hidePassword: 'Skryť heslo',
     noAccount: 'Nemáte účet?',
     hasAccount: 'Už máte účet?',
     checkEmailToConfirm: 'Skontrolujte si email a potvrďte svoj účet.',
@@ -78,5 +83,9 @@ export const sk: Translations = {
     loading: 'Načítava sa...',
     error: 'Niečo sa pokazilo.',
     tryAgain: 'Skúsiť znova',
+  },
+  theme: {
+    switchToLight: 'Prepnúť na svetlý režim',
+    switchToDark: 'Prepnúť na tmavý režim',
   },
 }

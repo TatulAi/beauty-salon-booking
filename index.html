@@ -8,6 +8,12 @@
     <meta name="robots" content="index, follow" />
     <meta name="theme-color" content="#14201C" />
 
+    <!-- Apply a saved light/dark choice before first paint, so there's no
+         flash of the wrong theme. External (not inline) to satisfy the
+         production CSP's `script-src 'self'`. Key + attribute must match
+         ThemeContext.tsx. -->
+    <script src="/theme-init.js"></script>
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

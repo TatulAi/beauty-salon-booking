@@ -2,6 +2,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage, type Locale } from '@/i18n/LanguageContext'
 import { Button } from '@/components/ui/Button'
+import { ThemeToggle } from '@/components/ui/ThemeToggle'
 
 export function Header() {
   const { user, signOut } = useAuth()
@@ -58,6 +59,8 @@ export function Header() {
           <option value="sk">SK</option>
           <option value="en">EN</option>
         </select>
+
+        <ThemeToggle />
       </nav>
     </header>
   )

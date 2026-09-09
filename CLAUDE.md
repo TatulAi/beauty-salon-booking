@@ -116,8 +116,16 @@ token set and `frontend-design` skill notes on why:
 - Motion is a single restrained moment: the hero's illustrative ticket has a slow idle sway
   (`.ticket-idle`, `@keyframes ticket-sway`), disabled entirely under `prefers-reduced-motion: reduce`.
   Nothing else in the app animates.
-- No manual light/dark toggle exists (`prefers-color-scheme` only) — this was an intentional v1 scope
-  cut made earlier in the project, not an oversight; see the Phase 0 plan.
+- **Light/dark toggle** (added 2026-09-10, reversing the earlier v1 scope cut). `src/theme/
+  ThemeContext.tsx` holds a `'light' | 'dark' | 'system'` setting (default `'system'`), persisted to
+  `localStorage['beauty-salon-theme']`. `'system'` sets no attribute (the CSS media query decides);
+  an explicit choice sets `data-theme` on `<html>`. Token cascade in `src/index.css` has three tiers:
+  bare `:root` (light), `@media (prefers-color-scheme: dark) :root:not([data-theme='light'])`, and
+  `:root[data-theme='dark']` — the two dark blocks are duplicated and must stay in sync.
+  `public/theme-init.js` (loaded blocking in `<head>`; external, not inline, to satisfy the prod CSP
+  `script-src 'self'`) re-applies the saved choice before first paint. The header button
+  (`src/components/ui/ThemeToggle.tsx`) is a binary flip based on the resolved theme — first click
+  also opts out of following the OS. `<meta name="theme-color">` is updated live by the context.
 
 ## Architecture
 

@@ -1,22 +1,18 @@
-import { useState, type FormEvent } from 'react'
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { getSupabase } from '@/lib/supabase'
 import { useLanguage } from '@/i18n/LanguageContext'
-import { Button } from '@/components/ui/Button'
-import { OAuthButtons } from './OAuthButtons'
+import { SignInCard2 } from '@/components/ui/sign-in-card-2'
 
 export function LoginForm({ redirectPath }: { redirectPath: string }) {
   const { t } = useLanguage()
   const navigate = useNavigate()
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [submitting, setSubmitting] = useState(false)
+  const [loading, setLoading] = useState(false)
 
-  async function handleSubmit(e: FormEvent) {
-    e.preventDefault()
+  async function handleSubmit({ email, password }: { email: string; password: string }) {
     setError(null)
-    setSubmitting(true)
+    setLoading(true)
     try {
       const supabase = await getSupabase()
       const { error: signInError } = await supabase.auth.signInWithPassword({ email, password })
@@ -26,37 +22,30 @@ export function LoginForm({ redirectPath }: { redirectPath: string }) {
       }
       navigate(redirectPath)
     } finally {
-      setSubmitting(false)
+      setLoading(false)
     }
   }
 
-  return (
-    <div className="mx-auto flex max-w-sm flex-col gap-4">
-      <h1 className="font-display text-2xl text-text">{t.auth.loginHeading}</h1>
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <input
-          type="email"
-          required
-          placeholder={t.auth.email}
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="rounded-md border border-border bg-surface px-3 py-2 text-text placeholder:text-text-secondary"
-        />
-        <input
-          type="password"
-          required
-          placeholder={t.auth.password}
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="rounded-md border border-border bg-surface px-3 py-2 text-text placeholder:text-text-secondary"
-        />
-        {error && <p className="text-sm text-danger">{error}</p>}
-        <Button type="submit" disabled={submitting}>
-          {t.auth.loginButton}
-        </Button>
-      </form>
+  async function handleGoogleSignIn() {
+    setLoading(true)
+    const supabase = await getSupabase()
+    const callbackUrl = new URL('/auth/callback', window.location.origin)
+    callbackUrl.searchParams.set('redirect', redirectPath)
+    // Full-page redirect to Google's consent screen — Supabase brings the
+    // visitor back to /auth/callback with the session in the URL.
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: callbackUrl.toString() },
+    })
+  }
 
-      <OAuthButtons redirectPath={redirectPath} />
-    </div>
+  return (
+    <SignInCard2
+      onSubmit={handleSubmit}
+      onGoogleSignIn={handleGoogleSignIn}
+      loading={loading}
+      error={error}
+      signupTo={`/signup?redirect=${encodeURIComponent(redirectPath)}`}
+    />
   )
 }

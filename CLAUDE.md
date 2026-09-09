@@ -207,13 +207,33 @@ routes, unlike the one-page sibling sites. Its CSP's `connect-src` already point
 replaced when the project was wired up. `img-src` allowlists the OAuth avatar CDN
 (`lh3.googleusercontent.com`) in case profile pictures get rendered later.
 
-**Before the first deploy:**
-- Set `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` in the Vercel project's env **before** the
-  build runs — Vite inlines `VITE_*` at build time, so a build without them ships a bundle where every
-  Supabase call is `undefined`. Values are in `.env.local`.
-- Add the deployed origin to **Supabase Auth → URL Configuration** (redirect allowlist / site URL) and
-  to the **Google Cloud console**'s authorized redirect URIs, or Google OAuth 404s/redirect-mismatches
-  in production. Local-verified OAuth says nothing about the prod domain.
+**Deployed 2026-09-09.** Vercel project `beauty-salon-booking` (team `tatul1`, id
+`prj_LypOOkNlLe0AOQ0YhrEsAvxOTVdY`), git-linked to `TatulAi/beauty-salon-booking`, production branch
+`master`. Live URLs (both 200): `https://beauty-salon-booking-tatul1.vercel.app` (canonical) and
+`https://beauty-salon-booking-liart.vercel.app`. `beauty-salon-booking.vercel.app` (no suffix) is
+**not** assigned — 404s. `.vercel/project.json` is written locally (gitignored).
+
+- **Env vars** `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` are set in Vercel for **both** Preview
+  and Production (via `vercel env add`). Vite inlines `VITE_*` at build time, so they must exist
+  before the build — a build without them ships `undefined` and every Supabase call fails silently.
+  Values live in `.env.local`.
+- **Vercel Authentication (SSO deployment protection)** was ON by team default at project creation;
+  turned **off** (all `*.vercel.app` URLs were behind a login wall). Re-enable via Project Settings →
+  Deployment Protection or `update_project_deployment_protection` if ever wanted.
+- The **first `vercel deploy` auto-promoted to Production** — Vercel forces a project's first
+  deployment to production regardless of `--prod`. Subsequent `vercel deploy` (no flag) are previews;
+  a push to `master` is a production deploy.
+- **Verified on the live URL:** landing page + design system render, `/book` loads all four services
+  from Supabase (so CSP `connect-src`, the inlined env vars, and anon RLS read all work in prod).
+- **Supabase Auth → URL Configuration** still needs the deployed origins (do this in the dashboard —
+  `supabase config push` risks clobbering unrelated remote auth settings). As of deploy the remote
+  had `site_url = http://localhost:5183` and `additional_redirect_urls = [http://localhost:5183/**]`.
+  Add: Site URL → `https://beauty-salon-booking-tatul1.vercel.app`; Redirect URLs →
+  `https://beauty-salon-booking-tatul1.vercel.app/**`, `https://beauty-salon-booking-liart.vercel.app/**`,
+  `https://beauty-salon-booking-*-tatul1.vercel.app/**` (future previews), keep `http://localhost:5183/**`.
+  Until then, Google OAuth on the deployed site bounces back to localhost. The **Google Cloud console**
+  redirect URI does *not* need touching — it points at Supabase's own callback
+  (`https://qowqhxuqclvfphysjiub.supabase.co/auth/v1/callback`), which is deployment-agnostic.
 
 ## Roadmap (not built)
 

@@ -40,7 +40,7 @@ export function SignupForm({ redirectPath }: { redirectPath: string }) {
 
   return (
     <div className="mx-auto flex max-w-sm flex-col gap-4">
-      <h1 className="text-xl font-semibold text-text">{t.auth.signupHeading}</h1>
+      <h1 className="font-display text-2xl text-text">{t.auth.signupHeading}</h1>
       <form onSubmit={handleSubmit} className="flex flex-col gap-3">
         <input
           type="text"
@@ -48,7 +48,7 @@ export function SignupForm({ redirectPath }: { redirectPath: string }) {
           placeholder={t.auth.fullName}
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
-          className="rounded-lg border border-border bg-surface px-3 py-2 text-text"
+          className="rounded-md border border-border bg-surface px-3 py-2 text-text placeholder:text-text-secondary"
         />
         <input
           type="email"
@@ -56,7 +56,7 @@ export function SignupForm({ redirectPath }: { redirectPath: string }) {
           placeholder={t.auth.email}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="rounded-lg border border-border bg-surface px-3 py-2 text-text"
+          className="rounded-md border border-border bg-surface px-3 py-2 text-text placeholder:text-text-secondary"
         />
         <input
           type="password"
@@ -65,7 +65,7 @@ export function SignupForm({ redirectPath }: { redirectPath: string }) {
           placeholder={t.auth.password}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="rounded-lg border border-border bg-surface px-3 py-2 text-text"
+          className="rounded-md border border-border bg-surface px-3 py-2 text-text placeholder:text-text-secondary"
         />
         {error && <p className="text-sm text-danger">{error}</p>}
         <Button type="submit" disabled={submitting}>

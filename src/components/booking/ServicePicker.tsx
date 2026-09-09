@@ -31,24 +31,24 @@ export function ServicePicker({ onSelect }: { onSelect: (service: Service) => vo
 
   return (
     <div className="flex flex-col gap-6">
-      <h2 className="text-lg font-semibold text-text">{t.booking.chooseService}</h2>
+      <h2 className="font-display text-2xl text-text">{t.booking.chooseService}</h2>
       {CATEGORY_ORDER.map((category) => {
         const items = services.filter((s) => s.category === category)
         if (items.length === 0) return null
         return (
           <div key={category}>
-            <h3 className="mb-2 text-sm font-medium uppercase tracking-wide text-text-secondary">
+            <h3 className="mb-2 text-xs font-medium tracking-widest text-text-secondary uppercase">
               {t.serviceCategory[category]}
             </h3>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {items.map((service) => (
                 <Card
                   key={service.id}
-                  className="cursor-pointer hover:border-accent"
+                  className="cursor-pointer hover:border-accent hover:shadow-[0_1px_0_var(--color-accent)]"
                   onClick={() => onSelect(service)}
                 >
-                  <p className="font-medium text-text">{service.name}</p>
-                  <p className="text-sm text-text-secondary">
+                  <p className="font-display text-lg text-text">{service.name}</p>
+                  <p className="mt-1 font-mono text-sm text-text-secondary">
                     {service.duration_minutes} min &middot; {formatPrice(service.price_cents, locale)}
                   </p>
                 </Card>

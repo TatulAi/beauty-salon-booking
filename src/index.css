@@ -1,42 +1,163 @@
 @import "tailwindcss";
 
+/*
+  Palette is the client-supplied stone/sage set — Dust Grey #DDD5D0, Silver
+  #CFC0BD, Ash Grey #B8B8AA, Grey Olive #7F9183, Granite #586F6B — a muted,
+  warm-cool "stone and sage" story rather than a bright accent on dark. Ink
+  and hover shades are darkened/lightened derivatives of Granite and Grey
+  Olive, not new hues, so the whole system still reads as one material.
+  Silver (the warm dusty mauve, the one non-green swatch in the set) is kept
+  for the ticket's signature swatch tab specifically — real hair-swatch fans
+  mix a warm tone in with the cools, and it stays constant across both
+  themes since it's the brand mark, not a mode-dependent UI color.
+*/
 :root {
-  --bg: #FBF7F4;
-  --surface: #FFFFFF;
-  --text: #241C1C;
-  --text-secondary: #6B5D5D;
-  --accent: #B5654D;
-  --accent-hover: #9A5340;
-  --border: rgba(107, 93, 93, 0.18);
-  --danger: #B3261E;
+  --bg: #ddd5d0; /* Dust Grey */
+  --surface: #f2ede8; /* lighter tint of Dust Grey, for cards to lift off the ground */
+  --surface-raised: #ffffff;
+  --text: #2b3735; /* darkened Granite, for real body-text contrast */
+  --text-secondary: #586f6b; /* Granite */
+  --border: rgba(88, 111, 107, 0.25); /* Granite */
+  --accent: #586f6b; /* Granite */
+  --accent-hover: #46524f; /* darkened Granite */
+  --signature: #cfc0bd; /* Silver */
+  --signature-ink: #3b2e2e;
+  --danger: #a65c4a;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg: #1B1616;
-    --surface: #251E1E;
-    --text: #F5EFEC;
-    --text-secondary: #C4B5B0;
-    --accent: #D98366;
-    --accent-hover: #E39B80;
-    --border: rgba(245, 239, 236, 0.14);
-    --danger: #F2B8B5;
+    --bg: #1c2624; /* darkened Granite */
+    --surface: #26312f;
+    --surface-raised: #2e3a37;
+    --text: #ddd5d0; /* Dust Grey */
+    --text-secondary: #9ca89f; /* muted Grey Olive */
+    --border: rgba(221, 213, 208, 0.14);
+    --accent: #7f9183; /* Grey Olive */
+    --accent-hover: #96a899;
+    --signature: #cfc0bd; /* Silver — unchanged across themes */
+    --signature-ink: #2e2422;
+    --danger: #d08972;
   }
 }
 
 @theme {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
+  --color-surface-raised: var(--surface-raised);
   --color-text: var(--text);
   --color-text-secondary: var(--text-secondary);
   --color-accent: var(--accent);
   --color-accent-hover: var(--accent-hover);
+  --color-signature: var(--signature);
+  --color-signature-ink: var(--signature-ink);
   --color-border: var(--border);
   --color-danger: var(--danger);
-  --font-sans: 'Segoe UI', system-ui, sans-serif;
+
+  --font-display: 'Fraunces', 'Iowan Old Style', serif;
+  --font-sans: 'Instrument Sans', system-ui, sans-serif;
+  --font-mono: 'IBM Plex Mono', ui-monospace, monospace;
 }
 
 body {
   background: var(--bg);
   color: var(--text);
+  font-family: var(--font-sans);
+}
+
+::selection {
+  background: var(--signature);
+  color: var(--signature-ink);
+}
+
+/* Visible keyboard focus everywhere, not just the browser default outline
+   on some elements — links/buttons/inputs all get the same treatment. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@layer components {
+  /*
+   * The signature element: a punch-ticket card used for a confirmed
+   * booking and each row in "My Appointments". A solid swatch tab (the
+   * device a colourist uses to show a dye swatch) clips to the top-left
+   * corner at a slight fan angle, and a perforated tear-line separates the
+   * "what and when" from the "how much and what status" the way a real
+   * ticket stub separates the parts you keep from the part that's torn off.
+   */
+  .ticket {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 3px;
+    padding-top: 1.75rem;
+    overflow: visible;
+  }
+
+  .ticket-tab {
+    position: absolute;
+    top: -0.6rem;
+    left: 1.25rem;
+    width: 2.5rem;
+    height: 1.2rem;
+    background: var(--signature);
+    border-radius: 2px;
+    transform: rotate(-3deg);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  }
+
+  .ticket--muted .ticket-tab {
+    background: var(--text-secondary);
+    opacity: 0.5;
+  }
+
+  .ticket-tear {
+    position: relative;
+    margin: 0.85rem 0;
+    border-top: 1.5px dashed var(--border);
+  }
+
+  .ticket-tear::before,
+  .ticket-tear::after {
+    content: '';
+    position: absolute;
+    top: -0.4rem;
+    width: 0.8rem;
+    height: 0.8rem;
+    background: var(--bg);
+    border-radius: 50%;
+  }
+
+  .ticket-tear::before {
+    left: -1.5rem;
+  }
+
+  .ticket-tear::after {
+    right: -1.5rem;
+  }
+
+  /* A slow, barely-there sway, like a card tacked to a mirror. Purely
+     decorative on the homepage hero — disabled entirely for anyone who
+     asked for reduced motion. */
+  .ticket-idle {
+    animation: ticket-sway 7s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ticket-idle {
+      animation: none;
+    }
+  }
+}
+
+@keyframes ticket-sway {
+  0%,
+  100% {
+    transform: rotate(-2.5deg);
+  }
+  50% {
+    transform: rotate(1deg);
+  }
 }

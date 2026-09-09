@@ -40,7 +40,7 @@ export function MyAppointmentsPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-10">
-      <h1 className="mb-6 text-xl font-semibold text-text">{t.appointments.heading}</h1>
+      <h1 className="font-display mb-6 text-3xl text-text">{t.appointments.heading}</h1>
 
       {loading && <p className="text-text-secondary">{t.common.loading}</p>}
 

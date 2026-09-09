@@ -15,31 +15,36 @@ export function Header() {
 
   return (
     <header className="flex flex-wrap items-center justify-between gap-4 border-b border-border px-6 py-4">
-      <Link to="/" className="text-lg font-semibold text-text">
-        {t.home.heading}
+      <Link to="/" className="font-display text-2xl italic text-text">
+        {t.brand.name}
       </Link>
 
-      <nav className="flex flex-wrap items-center gap-4 text-sm">
-        <Link to="/book" className="text-text hover:text-accent">
+      <nav className="flex flex-wrap items-center gap-5 text-sm tracking-wide uppercase">
+        <Link to="/book" className="text-text-secondary transition-colors hover:text-accent">
           {t.nav.book}
         </Link>
 
         {user ? (
           <>
-            <Link to="/my-appointments" className="text-text hover:text-accent">
+            <Link
+              to="/my-appointments"
+              className="text-text-secondary transition-colors hover:text-accent"
+            >
               {t.nav.myAppointments}
             </Link>
-            <Button variant="secondary" onClick={handleLogout}>
+            <Button variant="secondary" onClick={handleLogout} className="text-xs normal-case">
               {t.nav.logout}
             </Button>
           </>
         ) : (
           <>
-            <Link to="/login" className="text-text hover:text-accent">
+            <Link to="/login" className="text-text-secondary transition-colors hover:text-accent">
               {t.nav.login}
             </Link>
             <Link to="/signup">
-              <Button variant="primary">{t.nav.signup}</Button>
+              <Button variant="primary" className="text-xs normal-case">
+                {t.nav.signup}
+              </Button>
             </Link>
           </>
         )}
@@ -47,7 +52,7 @@ export function Header() {
         <select
           value={locale}
           onChange={(e) => setLocale(e.target.value as Locale)}
-          className="rounded border border-border bg-surface px-2 py-1 text-text"
+          className="rounded border border-border bg-surface px-2 py-1 text-xs text-text normal-case"
           aria-label="Language"
         >
           <option value="sk">SK</option>

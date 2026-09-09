@@ -1,6 +1,9 @@
 import type { Translations } from './types'
 
 export const en: Translations = {
+  brand: {
+    name: 'The Parlour',
+  },
   nav: {
     home: 'Home',
     book: 'Book Appointment',
@@ -10,9 +13,14 @@ export const en: Translations = {
     logout: 'Log Out',
   },
   home: {
-    heading: 'Look great, book easy',
-    subheading: 'Haircuts, coloring, and styling for everyone — book online in a minute.',
+    heading: 'Look sharp. Stay booked.',
+    subheading:
+      'Haircuts, colour, and styling for everyone. See real openings — down to the minute your service actually takes — and book in under a minute.',
     cta: 'Book an appointment',
+    ticketDay: 'Sat · 10:30',
+    ticketService: 'Colour & Cut',
+    ticketWith: 'with the Owner',
+    ticketPrice: '€70',
   },
   serviceCategory: {
     men: "Men's",
@@ -31,11 +39,6 @@ export const en: Translations = {
     noSlotsForDay: 'No available times on this day.',
     back: 'Back',
     confirmHeading: 'Confirm your appointment',
-    confirmService: 'Service',
-    confirmStaff: 'Stylist',
-    confirmDate: 'Date',
-    confirmTime: 'Time',
-    confirmPrice: 'Price',
     confirmButton: 'Confirm booking',
     booking: 'Booking...',
     loginToBook: 'Log in to book',

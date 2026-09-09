@@ -3,7 +3,9 @@ import { Link } from 'react-router-dom'
 import { useAuth } from '@/context/AuthContext'
 import { useLanguage } from '@/i18n/LanguageContext'
 import { getSupabase } from '@/lib/supabase'
+import { formatDateKey, formatPrice, formatShopTime, shopLocalDateKey } from '@/lib/time'
 import { Button } from '@/components/ui/Button'
+import { Ticket, TicketDivider } from '@/components/ui/Ticket'
 import { ServicePicker } from '@/components/booking/ServicePicker'
 import { StaffPicker } from '@/components/booking/StaffPicker'
 import { DatePicker } from '@/components/booking/DatePicker'
@@ -16,7 +18,7 @@ type Step = 'service' | 'staff' | 'date' | 'confirm' | 'success'
 
 export function BookingPage() {
   const { user } = useAuth()
-  const { t } = useLanguage()
+  const { t, locale } = useLanguage()
 
   const [timezone, setTimezone] = useState<string | null>(null)
   const [step, setStep] = useState<Step>('service')
@@ -66,11 +68,28 @@ export function BookingPage() {
     return <p className="p-6 text-text-secondary">{t.common.loading}</p>
   }
 
-  if (step === 'success' && confirmedAppointment) {
+  if (step === 'success' && confirmedAppointment && service && staff) {
     return (
-      <div className="mx-auto flex max-w-md flex-col items-center gap-4 px-6 py-16 text-center">
-        <h1 className="text-2xl font-semibold text-text">{t.booking.successHeading}</h1>
+      <div className="mx-auto flex max-w-md flex-col items-center gap-6 px-6 py-16 text-center">
+        <h1 className="font-display text-3xl text-text">{t.booking.successHeading}</h1>
         <p className="text-text-secondary">{t.booking.successBody}</p>
+
+        <Ticket className="w-64 max-w-full pt-8 text-left">
+          <p className="font-mono text-xs tracking-wide text-text-secondary">
+            {formatDateKey(shopLocalDateKey(new Date(confirmedAppointment.start_time), timezone), timezone, locale)}{' '}
+            &middot;{' '}
+            {formatShopTime(confirmedAppointment.start_time, timezone, locale)}
+          </p>
+          <p className="font-display mt-1 text-xl text-text">{service.name}</p>
+          <p className="mt-1 text-sm text-text-secondary">
+            {t.appointments.with} {staff.display_name}
+          </p>
+          <TicketDivider />
+          <p className="font-mono text-lg text-signature">
+            {formatPrice(confirmedAppointment.price_cents, locale)}
+          </p>
+        </Ticket>
+
         <Link to="/my-appointments">
           <Button>{t.booking.viewMyAppointments}</Button>
         </Link>
@@ -80,11 +99,11 @@ export function BookingPage() {
 
   return (
     <div className="mx-auto max-w-2xl px-6 py-10">
-      <ol className="mb-8 flex gap-4 text-sm text-text-secondary">
-        <StepLabel active={step === 'service'} label={t.booking.stepService} />
-        <StepLabel active={step === 'staff'} label={t.booking.stepStaff} />
-        <StepLabel active={step === 'date'} label={t.booking.stepDate} />
-        <StepLabel active={step === 'confirm'} label={t.booking.stepConfirm} />
+      <ol className="mb-8 flex gap-6 border-b border-border pb-4">
+        <StepLabel n={1} active={step === 'service'} label={t.booking.stepService} />
+        <StepLabel n={2} active={step === 'staff'} label={t.booking.stepStaff} />
+        <StepLabel n={3} active={step === 'date'} label={t.booking.stepDate} />
+        <StepLabel n={4} active={step === 'confirm'} label={t.booking.stepConfirm} />
       </ol>
 
       {step === 'service' && (
@@ -112,7 +131,7 @@ export function BookingPage() {
           <Button variant="secondary" onClick={() => setStep('staff')} className="w-fit">
             {t.booking.back}
           </Button>
-          <h2 className="text-lg font-semibold text-text">{t.booking.chooseDate}</h2>
+          <h2 className="font-display text-2xl text-text">{t.booking.chooseDate}</h2>
           {dateStepError && <p className="text-sm text-danger">{dateStepError}</p>}
           <DatePicker
             timezone={timezone}
@@ -124,7 +143,7 @@ export function BookingPage() {
           />
           {dateKey && (
             <>
-              <h2 className="text-lg font-semibold text-text">{t.booking.chooseTime}</h2>
+              <h2 className="font-display text-2xl text-text">{t.booking.chooseTime}</h2>
               <TimeSlotGrid
                 staffId={staff.id}
                 serviceId={service.id}
@@ -164,6 +183,15 @@ export function BookingPage() {
   )
 }
 
-function StepLabel({ active, label }: { active: boolean; label: string }) {
-  return <li className={active ? 'font-semibold text-accent' : ''}>{label}</li>
+function StepLabel({ n, active, label }: { n: number; active: boolean; label: string }) {
+  return (
+    <li
+      className={`flex items-center gap-2 text-sm ${active ? 'text-text' : 'text-text-secondary'}`}
+    >
+      <span className={`font-mono text-xs ${active ? 'text-accent' : ''}`}>
+        {String(n).padStart(2, '0')}
+      </span>
+      <span className={active ? 'font-medium' : ''}>{label}</span>
+    </li>
+  )
 }

@@ -25,7 +25,7 @@ export function TimeSlotGrid({ staffId, serviceId, dateKey, timezone, onSelect }
           key={iso}
           type="button"
           onClick={() => onSelect(iso)}
-          className="rounded-lg border border-border bg-surface px-3 py-2 text-sm text-text hover:border-accent"
+          className="rounded-md border border-border bg-surface px-3 py-2 font-mono text-sm tabular-nums text-text transition-colors hover:border-accent"
         >
           {formatShopTime(iso, timezone, locale)}
         </button>

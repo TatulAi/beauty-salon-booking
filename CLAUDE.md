@@ -59,6 +59,35 @@ access token from https://supabase.com/dashboard/account/tokens — the normal b
 `supabase login` needs a real TTY and won't work from an agent shell) is a one-time step per machine;
 after that, `db push` just works.
 
+## Design system
+
+The visual identity is deliberate, not a default Tailwind skin — see `src/index.css` for the full
+token set and `frontend-design` skill notes on why:
+
+- **Palette** is the client-supplied stone/sage set (Dust Grey `#DDD5D0`, Silver `#CFC0BD`, Ash Grey
+  `#B8B8AA`, Grey Olive `#7F9183`, Granite `#586F6B`), not an invented one. Light mode uses Dust Grey as
+  the ground with darkened-Granite ink; dark mode inverts to a darkened-Granite ground with Dust Grey
+  ink and Grey Olive as the accent. **Silver stays constant across both themes** as `--signature` — it's
+  the one color that identifies the ticket motif specifically, not a mode-dependent UI color.
+- **Type**: Fraunces (display/headings, soft optical sizing) + Instrument Sans (UI/body, same type
+  foundry as Fraunces, a real pairing) + IBM Plex Mono (times, prices, dates — anywhere precision
+  matters). Loaded via Google Fonts `<link>` in `index.html`, not self-hosted.
+- **Signature element**: `src/components/ui/Ticket.tsx` — a punch-ticket card with a solid swatch tab
+  (`.ticket-tab`, colored `--signature`) clipped to the top-left corner at a slight angle, and a
+  perforated tear-line (`.ticket-tear`, `TicketDivider`) separating date/service from price/status. Used
+  for the booking confirmation, the post-booking success screen, and every row in "My Appointments" — it
+  is the one place this app spends visual boldness; everything else (buttons, service/staff cards, form
+  inputs) stays quiet and disciplined around it. A cancelled appointment renders the same ticket with
+  `muted` set, fading the tab to grey rather than using a different component.
+- **Numbered step breadcrumb** in `BookingPage.tsx` (`01 Služba / 02 Kaderník/čka / ...`) uses numbers
+  because the booking flow genuinely is a fixed 4-step sequence — not a decorative default applied
+  without reason.
+- Motion is a single restrained moment: the hero's illustrative ticket has a slow idle sway
+  (`.ticket-idle`, `@keyframes ticket-sway`), disabled entirely under `prefers-reduced-motion: reduce`.
+  Nothing else in the app animates.
+- No manual light/dark toggle exists (`prefers-color-scheme` only) — this was an intentional v1 scope
+  cut made earlier in the project, not an oversight; see the Phase 0 plan.
+
 ## Architecture
 
 - `src/lib/supabase.ts` — lazily loaded Supabase client (dynamic `import('@supabase/supabase-js')`,

@@ -42,7 +42,7 @@ export function StaffPicker({ serviceId, onSelect, onBack }: StaffPickerProps) {
       <Button variant="secondary" onClick={onBack} className="w-fit">
         {t.booking.back}
       </Button>
-      <h2 className="text-lg font-semibold text-text">{t.booking.chooseStaff}</h2>
+      <h2 className="font-display text-2xl text-text">{t.booking.chooseStaff}</h2>
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {staff.map((member) => (
           <Card
@@ -50,8 +50,8 @@ export function StaffPicker({ serviceId, onSelect, onBack }: StaffPickerProps) {
             className="cursor-pointer hover:border-accent"
             onClick={() => onSelect(member)}
           >
-            <p className="font-medium text-text">{member.display_name}</p>
-            {member.bio && <p className="text-sm text-text-secondary">{member.bio}</p>}
+            <p className="font-display text-lg text-text">{member.display_name}</p>
+            {member.bio && <p className="mt-1 text-sm text-text-secondary">{member.bio}</p>}
           </Card>
         ))}
       </div>

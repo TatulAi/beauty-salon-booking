@@ -1,6 +1,9 @@
 import type { Translations } from './types'
 
 export const sk: Translations = {
+  brand: {
+    name: 'The Parlour',
+  },
   nav: {
     home: 'Domov',
     book: 'Objednať termín',
@@ -10,9 +13,14 @@ export const sk: Translations = {
     logout: 'Odhlásiť sa',
   },
   home: {
-    heading: 'Vyzerajte skvele, objednajte sa jednoducho',
-    subheading: 'Strihanie, farbenie a styling pre všetkých — objednajte sa online za minútu.',
+    heading: 'Nový vzhľad. Skutočne voľný termín.',
+    subheading:
+      'Strihanie, farbenie a styling pre všetkých. Uvidíte skutočne voľné termíny — presne podľa dĺžky služby — a objednáte sa za minútu.',
     cta: 'Objednať termín',
+    ticketDay: 'So · 10:30',
+    ticketService: 'Farbenie a strih',
+    ticketWith: 's majiteľkou/majiteľom',
+    ticketPrice: '70 €',
   },
   serviceCategory: {
     men: 'Pánske',
@@ -31,11 +39,6 @@ export const sk: Translations = {
     noSlotsForDay: 'V tento deň nie sú voľné termíny.',
     back: 'Späť',
     confirmHeading: 'Potvrďte svoju rezerváciu',
-    confirmService: 'Služba',
-    confirmStaff: 'Kaderník/čka',
-    confirmDate: 'Dátum',
-    confirmTime: 'Čas',
-    confirmPrice: 'Cena',
     confirmButton: 'Potvrdiť rezerváciu',
     booking: 'Rezervujem...',
     loginToBook: 'Prihláste sa pre rezerváciu',

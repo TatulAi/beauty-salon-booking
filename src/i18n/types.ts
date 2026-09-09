@@ -1,4 +1,7 @@
 export interface Translations {
+  brand: {
+    name: string
+  }
   nav: {
     home: string
     book: string
@@ -11,6 +14,10 @@ export interface Translations {
     heading: string
     subheading: string
     cta: string
+    ticketDay: string
+    ticketService: string
+    ticketWith: string
+    ticketPrice: string
   }
   serviceCategory: {
     men: string
@@ -29,11 +36,6 @@ export interface Translations {
     noSlotsForDay: string
     back: string
     confirmHeading: string
-    confirmService: string
-    confirmStaff: string
-    confirmDate: string
-    confirmTime: string
-    confirmPrice: string
     confirmButton: string
     booking: string
     loginToBook: string

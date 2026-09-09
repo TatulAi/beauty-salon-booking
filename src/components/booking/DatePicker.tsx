@@ -20,9 +20,9 @@ export function DatePicker({ timezone, selectedDateKey, onSelect }: DatePickerPr
           key={dateKey}
           type="button"
           onClick={() => onSelect(dateKey)}
-          className={`shrink-0 rounded-lg border px-3 py-2 text-sm transition-colors ${
+          className={`shrink-0 rounded-md border px-3 py-2 font-mono text-sm transition-colors ${
             dateKey === selectedDateKey
-              ? 'border-accent bg-accent text-white'
+              ? 'border-accent bg-accent text-signature-ink'
               : 'border-border bg-surface text-text hover:border-accent'
           }`}
         >

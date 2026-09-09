@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { useLanguage } from '@/i18n/LanguageContext'
 import { getSupabase } from '@/lib/supabase'
 import { formatPrice } from '@/lib/time'
-import { Card } from '@/components/ui/Card'
+import { Ticket, TicketDivider } from '@/components/ui/Ticket'
 import { Button } from '@/components/ui/Button'
 import type { Appointment } from '@/types/database'
 
@@ -26,6 +26,7 @@ export function AppointmentCard({ appointment, timezone, locale, onCancelled }: 
   const [error, setError] = useState<string | null>(null)
 
   const canCancel = appointment.status === 'confirmed' && new Date(appointment.start_time) > new Date()
+  const isCancelled = appointment.status === 'cancelled'
 
   async function handleCancel() {
     setCancelling(true)
@@ -55,21 +56,32 @@ export function AppointmentCard({ appointment, timezone, locale, onCancelled }: 
   })
 
   return (
-    <Card className="flex flex-col gap-1">
-      <p className="font-medium text-text">{appointment.services?.name}</p>
-      <p className="text-sm text-text-secondary">
-        {t.appointments.with} {appointment.staff?.display_name} &middot;{' '}
+    <Ticket muted={isCancelled} className="pt-8">
+      <p className="font-mono text-xs tracking-wide text-text-secondary">
         {dateFormatter.format(new Date(appointment.start_time))}
       </p>
-      <p className="text-sm text-text-secondary">
-        {formatPrice(appointment.price_cents, locale)} &middot; {t.appointments[STATUS_KEY[appointment.status]]}
+      <p className="font-display mt-1 text-xl text-text">{appointment.services?.name}</p>
+      <p className="mt-1 text-sm text-text-secondary">
+        {t.appointments.with} {appointment.staff?.display_name}
       </p>
-      {error && <p className="text-sm text-danger">{error}</p>}
+
+      <TicketDivider />
+
+      <div className="flex items-center justify-between">
+        <p className={`font-mono text-lg ${isCancelled ? 'text-text-secondary' : 'text-signature'}`}>
+          {formatPrice(appointment.price_cents, locale)}
+        </p>
+        <p className="text-xs tracking-wide text-text-secondary uppercase">
+          {t.appointments[STATUS_KEY[appointment.status]]}
+        </p>
+      </div>
+
+      {error && <p className="mt-2 text-sm text-danger">{error}</p>}
       {canCancel && (
-        <Button variant="danger" onClick={handleCancel} disabled={cancelling} className="mt-2 w-fit">
+        <Button variant="danger" onClick={handleCancel} disabled={cancelling} className="mt-3 w-fit">
           {cancelling ? t.appointments.cancelling : t.appointments.cancelButton}
         </Button>
       )}
-    </Card>
+    </Ticket>
   )
 }

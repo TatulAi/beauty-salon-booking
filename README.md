@@ -36,10 +36,6 @@ In the Supabase dashboard → **Authentication → Providers**:
   [Google Cloud Console](https://console.cloud.google.com/apis/credentials). Authorized redirect URI:
   `https://qowqhxuqclvfphysjiub.supabase.co/auth/v1/callback`. Paste the Client ID/Secret into
   Supabase's Google provider settings and enable it.
-- **GitHub**: create an OAuth App in
-  [GitHub Developer Settings](https://github.com/settings/developers). Authorization callback URL: the
-  same `https://qowqhxuqclvfphysjiub.supabase.co/auth/v1/callback`. Paste Client ID/Secret into
-  Supabase's GitHub provider settings and enable it.
 - **Authentication → URL Configuration**: set Site URL and add to the Redirect URLs allow-list:
   `http://localhost:5173/**`, your Vercel preview pattern (`https://beauty-salon-booking-*.vercel.app/**`),
   and your production domain once you have one.

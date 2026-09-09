@@ -64,7 +64,6 @@ export interface Translations {
     signupButton: string
     orContinueWith: string
     continueWithGoogle: string
-    continueWithGithub: string
     noAccount: string
     hasAccount: string
     checkEmailToConfirm: string

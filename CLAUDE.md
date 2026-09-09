@@ -19,11 +19,17 @@ data for the 120-minute coloring service on a Mon-Fri (9-12/12:30-17) day: it co
 works as designed. `create_appointment` was confirmed to reject unauthenticated calls with
 `AUTH_REQUIRED`.
 
-**Still not verified**: Google/GitHub OAuth (providers not yet enabled in the dashboard), the full
-frontend booking flow against real data (only raw REST/RPC calls have been exercised, not the React app
-itself), and the exclusion constraint's actual concurrency behavior (two simultaneous bookings racing
-for the same slot — the single calls made so far were sequential, not concurrent). Run the rest of the
-Verification section in the plan (`~/.claude/plans/noble-dreaming-fog.md`) once OAuth is wired up.
+**Also verified end-to-end in a real browser** against the live project: Google OAuth login (full
+redirect round-trip through Google → Supabase → `/auth/callback`), the `profiles` row created by
+`handle_new_user`, `ProtectedRoute` correctly gating `/my-appointments`, the entire booking wizard for
+the 120-minute Women's Coloring service (confirmed the UI shows exactly the same lunch-gap-respecting
+slots as the raw RPC test — 9:00-10:00 then a gap to 12:30), `create_appointment` actually inserting a
+row, and `cancel_appointment` flipping its status. GitHub auth was dropped per project owner's choice
+(not needed) — see the git history for the removal commit if it's ever wanted back.
+
+**Still not verified**: the exclusion constraint's actual concurrency behavior (two simultaneous
+bookings racing for the same slot — everything tested so far was sequential, not concurrent), and the
+booking flow for staff/services other than the one combination exercised above.
 
 ## The core problem this app solves
 
@@ -139,8 +145,7 @@ Safe to expose the anon key: everything it can do is constrained by RLS policies
 routes, unlike the one-page sibling sites. Its CSP's `connect-src` has a `<SUPABASE_PROJECT_REF>`
 placeholder — **replace it with the real project ref once the Supabase project exists**, or the browser
 will silently block every Supabase API call in production. `img-src` already allowlists both OAuth
-avatar CDNs (`lh3.googleusercontent.com` for Google, `avatars.githubusercontent.com` for GitHub) in case
-profile pictures get rendered later.
+avatar CDN (`lh3.googleusercontent.com`) in case profile pictures get rendered later.
 
 ## Roadmap (not built)
 

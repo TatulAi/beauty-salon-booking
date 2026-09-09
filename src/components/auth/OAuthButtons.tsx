@@ -10,17 +10,17 @@ interface OAuthButtonsProps {
 
 export function OAuthButtons({ redirectPath }: OAuthButtonsProps) {
   const { t } = useLanguage()
-  const [pending, setPending] = useState<'google' | 'github' | null>(null)
+  const [pending, setPending] = useState(false)
 
-  async function handleOAuth(provider: 'google' | 'github') {
-    setPending(provider)
+  async function handleGoogleOAuth() {
+    setPending(true)
     const supabase = await getSupabase()
     const callbackUrl = new URL('/auth/callback', window.location.origin)
     callbackUrl.searchParams.set('redirect', redirectPath)
-    // Full-page redirect to the provider's consent screen — Supabase brings
-    // the visitor back to /auth/callback with the session in the URL.
+    // Full-page redirect to Google's consent screen — Supabase brings the
+    // visitor back to /auth/callback with the session in the URL.
     await supabase.auth.signInWithOAuth({
-      provider,
+      provider: 'google',
       options: { redirectTo: callbackUrl.toString() },
     })
   }
@@ -28,21 +28,8 @@ export function OAuthButtons({ redirectPath }: OAuthButtonsProps) {
   return (
     <div className="flex flex-col gap-2">
       <p className="text-center text-sm text-text-secondary">{t.auth.orContinueWith}</p>
-      <Button
-        type="button"
-        variant="secondary"
-        disabled={pending !== null}
-        onClick={() => handleOAuth('google')}
-      >
+      <Button type="button" variant="secondary" disabled={pending} onClick={handleGoogleOAuth}>
         {t.auth.continueWithGoogle}
-      </Button>
-      <Button
-        type="button"
-        variant="secondary"
-        disabled={pending !== null}
-        onClick={() => handleOAuth('github')}
-      >
-        {t.auth.continueWithGithub}
       </Button>
     </div>
   )

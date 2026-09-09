@@ -66,7 +66,6 @@ export const sk: Translations = {
     signupButton: 'Registrovať sa',
     orContinueWith: 'alebo pokračujte cez',
     continueWithGoogle: 'Pokračovať cez Google',
-    continueWithGithub: 'Pokračovať cez GitHub',
     noAccount: 'Nemáte účet?',
     hasAccount: 'Už máte účet?',
     checkEmailToConfirm: 'Skontrolujte si email a potvrďte svoj účet.',

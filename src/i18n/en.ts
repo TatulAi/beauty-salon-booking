@@ -66,7 +66,6 @@ export const en: Translations = {
     signupButton: 'Sign up',
     orContinueWith: 'or continue with',
     continueWithGoogle: 'Continue with Google',
-    continueWithGithub: 'Continue with GitHub',
     noAccount: "Don't have an account?",
     hasAccount: 'Already have an account?',
     checkEmailToConfirm: 'Check your email to confirm your account.',
